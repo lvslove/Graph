@@ -1,8 +1,6 @@
 import json
 from collections import defaultdict
-from pprint import pprint
 
-from collection_json import Collection
 
 
 class Graph(object):
@@ -12,12 +10,13 @@ class Graph(object):
         self._directed = directed
         self.add_connections(connections)
 
-    def to_dict(self):
-        fields = {
-            'направленный': self._directed,
-            'items': Collection.__format__(self._graph),
-        }
-        return fields
+    def print(self, s=" "):
+        for key in self._graph:
+            s += (key,self._graph[key])
+        return s
+
+
+
 
     def add_connections(self, connections):
 
@@ -60,13 +59,8 @@ class Graph(object):
         return node1 in self._graph and node2 in self._graph[node1]
 
 
-
-    def __str__(self):
-        return '"[{},{}]"'.format(self._directed, dict(self._graph))
-
     def __write__(self):
-        s = json.loads(self.__str__())
         with open("data_file.json", "w") as write_file:
-            json.dump(s, write_file)
+            json.dump(self.to_dict(), write_file)
 
 
