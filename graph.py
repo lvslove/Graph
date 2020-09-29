@@ -2,7 +2,6 @@ import json
 from collections import defaultdict
 
 
-
 class Graph(object):
 
     def __init__(self, connections, directed=False):
@@ -10,12 +9,10 @@ class Graph(object):
         self._directed = directed
         self.add_connections(connections)
 
-    def print(self, s=" "):
+    def nice_print(self, s="{\n"):
         for key in self._graph:
-            s += (key,self._graph[key])
-        return s
-
-
+            s+= '\t{"'+str(key)+'"}:'  + str(self._graph[key])+"\n"
+        return s+"}"
 
 
     def add_connections(self, connections):
@@ -60,7 +57,53 @@ class Graph(object):
 
 
     def __write__(self):
-        with open("data_file.json", "w") as write_file:
-            json.dump(self.to_dict(), write_file)
+        with open('data.json', 'w', encoding='utf-8') as fh:  # открываем файл на запись
+            fh.write(json.dumps(self._graph, ensure_ascii=False))
+
+
+    def write_in_file(self):
+        s = ""
+        for key in self._graph:
+
+            s+= '"'+str(key)+'":' + str(self._graph[key])+","
+
+        newstring = s
+        newstring = newstring.replace('}', ']')
+        newstring = newstring.replace("'", '"')
+        newstring = newstring.replace('{', '[')
+        s = "{" + newstring + "}"
+        newstring = s[:-2]
+        newstring2 = newstring + "}"
+        if self._directed:
+            newstring3 = "yes"
+        else:
+            newstring3 = "no"
+
+        d = json.loads(newstring2)
+        file_path = 'file.json'
+        with open(file_path) as f:
+            data = json.load(f)
+            data['datas'].append(d)
+            data['directed'] = newstring3
+
+            with open(file_path, 'w') as outfile:
+                json.dump(data, outfile)
+
+
+    def update_file(self):
+        def clear_json():
+            file_path = 'file.json'
+            with open(file_path) as f:
+                data = json.load(f)
+                data['datas'] = []
+                data['directed'] = []
+
+                with open(file_path, 'w') as outfile:
+                    json.dump(data, outfile)
+        clear_json()
+        self.write_in_file()
+
+
+
 
 
