@@ -9,11 +9,17 @@ class Graph(object):
         self._directed = directed
         self.add_connections(connections)
 
-    def nice_print(self, s="{\n"):
+    def nice_print(self ):
+        s="\n"
+        print(self._directed)
         for key in self._graph:
-            s+= '\t{"'+str(key)+'"}:'  + str(self._graph[key])+"\n"
-        return s+"}"
+            s+='\t{"'+str(key)+'"}:'  + str(self._graph[key])+"\n"
 
+
+        print(s)
+
+    def test(self):
+        print (self._directed)
 
     def add_connections(self, connections):
 
@@ -51,14 +57,8 @@ class Graph(object):
             pass
 
     def is_connected(self, node1, node2):
-
-
         return node1 in self._graph and node2 in self._graph[node1]
 
-
-    def __write__(self):
-        with open('data.json', 'w', encoding='utf-8') as fh:  # открываем файл на запись
-            fh.write(json.dumps(self._graph, ensure_ascii=False))
 
 
     def write_in_file(self):
@@ -71,9 +71,11 @@ class Graph(object):
         newstring = newstring.replace('}', ']')
         newstring = newstring.replace("'", '"')
         newstring = newstring.replace('{', '[')
+        newstring = newstring.replace('set()', '{}')
         s = "{" + newstring + "}"
         newstring = s[:-2]
         newstring2 = newstring + "}"
+        print(newstring2)
         if self._directed:
             newstring3 = "yes"
         else:
@@ -103,7 +105,32 @@ class Graph(object):
         clear_json()
         self.write_in_file()
 
+    def read_json(self):
+        with open('creat.json', 'r', encoding='utf-8') as fh:  # открываем файл на чтение
+            data = json.load(fh)
+        if (data['directed'])=="yes":
+            self._directed=True
+        else:
+            self._directed=False
+        for value in data['datas']:
+           s=(value)
+        print(s)
+        z=""
+        for key in value:
 
-
-
+            z+= '"'+str(key)+'":' + str(value[key])+","
+        newstring = z
+        newstring = newstring.replace('}', ']')
+        newstring = newstring.replace("'", '"')
+        newstring = newstring.replace('{', '[')
+        z = "{" + newstring + "}"
+        newstring = z[:-2]
+        newstring2 = newstring + "}"
+        a = json.loads(newstring2)
+        for n in a:
+            self.add_Node(n)
+            i=0
+            while(len(a[n])>i):
+                self.add_Edge(n,a[n][i])
+                i+=1
 

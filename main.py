@@ -1,15 +1,14 @@
 from graph import Graph
-import json
 
-defolt=[]
-connections = [("A", "HHHH"), ("B", "C"), ("B", "D"),
-                   ("C", "D"), ("E", "F"), ("F", "C"), ("F", "HG")]
-g = Graph(connections, directed=True)
+defolt=[('1','4')]
 
-g.add_Edge('4','3')
-new = Graph(defolt)
-
+g = Graph(defolt)
+g.read_json()
+g.nice_print()
+g.remove_Node('d')
+g.nice_print()
+g.remove_Node('BLAT')
+g.nice_print()
 g.update_file()
-
 
 
