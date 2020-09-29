@@ -1,8 +1,11 @@
+import json
+from pprint import pprint
 from graph import Graph
-import pprint
+import json
 
-connections = [('A', 'B'), ('B', 'C'), ('B', 'D'),
-                   ('C', 'D'), ('E', 'F'), ('F', 'C')]
+connections = [("A", "HHHH"), ("B", "C"), ("B", "D"),
+                   ("C", "D"), ("E", "F"), ("F", "C"), ("F", "HG")]
 g = Graph(connections, directed=True)
-pretty_print = pprint.PrettyPrinter()
-pretty_print.pprint(g._graph)
+
+
+print(json.dumps(g.to_dict(), ensure_ascii=False, indent=4))
