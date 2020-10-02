@@ -5,12 +5,17 @@ import copy
 
 class Graph(object):
 
+<<<<<<< HEAD
     def __init__(self, directed=False):
+=======
+    def __init__(self,directed=False):
+>>>>>>> task1
         self._graph = defaultdict(set)
         self._directed = directed
         #self.add_connections(connections)
 
     def nice_print(self):
+<<<<<<< HEAD
         s = "\n"
         print(self._directed)
         for key in self._graph:
@@ -21,6 +26,21 @@ class Graph(object):
     def copy(self):
         s = copy.copy(self._graph)
         return s
+=======
+        s="\n"
+        print("\n\t"+self.prtint_dir())
+        if (self._graph):
+            for key in self._graph:
+                s+='\t{"'+str(key)+'"}:'+ str(self._graph[key])+"\n"
+        else: print("The graph is empty")
+        print(s)
+
+    def check(self):
+        for key in self._graph:
+            s =(key)
+        print (s)
+
+>>>>>>> task1
 
     def add_connections(self, connections):
 
@@ -34,16 +54,22 @@ class Graph(object):
             self._graph[node2].add(node1)
 
     def add_Node(self, node1):
-        self._graph[node1]
+         self._graph[node1]
 
     def remove_Edge(self, node1, node2):
+<<<<<<< HEAD
 
+=======
+>>>>>>> task1
         self._graph[node1].remove(node2)
         if not self._directed:
             self._graph[node2].remove(node1)
 
     def remove_Node(self, node):
+<<<<<<< HEAD
 
+=======
+>>>>>>> task1
         for n, cxns in self._graph.items():
             try:
                 cxns.remove(node)
@@ -57,11 +83,19 @@ class Graph(object):
     def is_connected(self, node1, node2):
         return node1 in self._graph and node2 in self._graph[node1]
 
+<<<<<<< HEAD
     def write_in_file(self):
         s = ""
         for key in self._graph:
             s += '"' + str(key) + '":' + str(self._graph[key]) + ","
 
+=======
+
+    def write_in_file(self):
+        s = ""
+        for key in self._graph:
+            s+= '"'+str(key)+'":' + str(self._graph[key])+","
+>>>>>>> task1
         newstring = s
         newstring = newstring.replace('}', ']')
         newstring = newstring.replace("'", '"')
@@ -70,14 +104,13 @@ class Graph(object):
         s = "{" + newstring + "}"
         newstring = s[:-2]
         newstring2 = newstring + "}"
-        print(newstring2)
         if self._directed:
             newstring3 = "yes"
         else:
             newstring3 = "no"
 
         d = json.loads(newstring2)
-        file_path = 'file.json'
+        file_path = 'json/output.json'
         with open(file_path) as f:
             data = json.load(f)
             data['datas'].append(d)
@@ -88,7 +121,7 @@ class Graph(object):
 
     def update_file(self):
         def clear_json():
-            file_path = 'file.json'
+            file_path = 'json/output.json'
             with open(file_path) as f:
                 data = json.load(f)
                 data['datas'] = []
@@ -101,18 +134,25 @@ class Graph(object):
         self.write_in_file()
 
     def read_json(self):
-        with open('creat.json', 'r', encoding='utf-8') as fh:  # открываем файл на чтение
+        with open('json/input.json', 'r', encoding='utf-8') as fh:  # открываем файл на чтение
             data = json.load(fh)
         if (data['directed']) == "yes":
             self._directed = True
         else:
             self._directed = False
         for value in data['datas']:
+<<<<<<< HEAD
             s = (value)
         print(s)
         z = ""
         for key in value:
             z += '"' + str(key) + '":' + str(value[key]) + ","
+=======
+           s=(value)
+        z=""
+        for key in value:
+            z+= '"'+str(key)+'":' + str(value[key])+","
+>>>>>>> task1
         newstring = z
         newstring = newstring.replace('}', ']')
         newstring = newstring.replace("'", '"')
@@ -123,7 +163,34 @@ class Graph(object):
         a = json.loads(newstring2)
         for n in a:
             self.add_Node(n)
+<<<<<<< HEAD
             i = 0
             while (len(a[n]) > i):
                 self.add_Edge(n, a[n][i])
                 i += 1
+=======
+            i=0
+            while(len(a[n])>i):
+                self.add_Edge(n,a[n][i])
+                i+=1
+
+    def prtint_dir(self):
+        if(self._directed):
+            return "directed"
+        else:
+            return "undirected"
+
+    def unchild(self):
+        for key in self._graph:
+            if((self._graph[key])!=set()):
+               z = (self._graph[key])
+               while (z):
+                a=z.pop()
+                print(a)
+
+
+
+
+
+
+>>>>>>> task1
