@@ -1,6 +1,6 @@
 from graph import Graph
 import copy
-<<<<<<< HEAD
+
 
 y=True
 while(y):
@@ -52,10 +52,4 @@ while(y):
 
 
 
-=======
 
-g =Graph()
-g.read_json()
->>>>>>> task1
-
-g.unchild()

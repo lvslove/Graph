@@ -5,17 +5,15 @@ import copy
 
 class Graph(object):
 
-<<<<<<< HEAD
-    def __init__(self, directed=False):
-=======
+
     def __init__(self,directed=False):
->>>>>>> task1
+
         self._graph = defaultdict(set)
         self._directed = directed
         #self.add_connections(connections)
 
     def nice_print(self):
-<<<<<<< HEAD
+
         s = "\n"
         print(self._directed)
         for key in self._graph:
@@ -26,7 +24,7 @@ class Graph(object):
     def copy(self):
         s = copy.copy(self._graph)
         return s
-=======
+
         s="\n"
         print("\n\t"+self.prtint_dir())
         if (self._graph):
@@ -39,8 +37,6 @@ class Graph(object):
         for key in self._graph:
             s =(key)
         print (s)
-
->>>>>>> task1
 
     def add_connections(self, connections):
 
@@ -57,19 +53,12 @@ class Graph(object):
          self._graph[node1]
 
     def remove_Edge(self, node1, node2):
-<<<<<<< HEAD
-
-=======
->>>>>>> task1
         self._graph[node1].remove(node2)
         if not self._directed:
             self._graph[node2].remove(node1)
 
     def remove_Node(self, node):
-<<<<<<< HEAD
 
-=======
->>>>>>> task1
         for n, cxns in self._graph.items():
             try:
                 cxns.remove(node)
@@ -83,19 +72,17 @@ class Graph(object):
     def is_connected(self, node1, node2):
         return node1 in self._graph and node2 in self._graph[node1]
 
-<<<<<<< HEAD
+
     def write_in_file(self):
         s = ""
         for key in self._graph:
             s += '"' + str(key) + '":' + str(self._graph[key]) + ","
 
-=======
 
     def write_in_file(self):
         s = ""
         for key in self._graph:
             s+= '"'+str(key)+'":' + str(self._graph[key])+","
->>>>>>> task1
         newstring = s
         newstring = newstring.replace('}', ']')
         newstring = newstring.replace("'", '"')
@@ -141,18 +128,17 @@ class Graph(object):
         else:
             self._directed = False
         for value in data['datas']:
-<<<<<<< HEAD
+
             s = (value)
         print(s)
         z = ""
         for key in value:
             z += '"' + str(key) + '":' + str(value[key]) + ","
-=======
-           s=(value)
+        s=(value)
         z=""
         for key in value:
             z+= '"'+str(key)+'":' + str(value[key])+","
->>>>>>> task1
+
         newstring = z
         newstring = newstring.replace('}', ']')
         newstring = newstring.replace("'", '"')
@@ -163,12 +149,12 @@ class Graph(object):
         a = json.loads(newstring2)
         for n in a:
             self.add_Node(n)
-<<<<<<< HEAD
+
             i = 0
             while (len(a[n]) > i):
                 self.add_Edge(n, a[n][i])
                 i += 1
-=======
+
             i=0
             while(len(a[n])>i):
                 self.add_Edge(n,a[n][i])
@@ -193,4 +179,3 @@ class Graph(object):
 
 
 
->>>>>>> task1
