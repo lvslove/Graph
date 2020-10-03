@@ -1,1 +1,10 @@
-{"directed": "yes", "datas": [{"b": ["z"]}]}
+{
+  "directed": "yes",
+  "datas": [
+    {
+      "b": [
+        "z"
+      ]
+    }
+  ]
+}

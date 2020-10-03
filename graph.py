@@ -5,52 +5,36 @@ import copy
 
 class Graph(object):
 
-
-    def __init__(self,directed=False):
-
+    def __init__(self, directed=False):
         self._graph = defaultdict(set)
         self._directed = directed
-        #self.add_connections(connections)
+        # self.add_connections(connections)
 
     def nice_print(self):
-
         s = "\n"
         print(self._directed)
         for key in self._graph:
             s += '\t{"' + str(key) + '"}:' + str(self._graph[key]) + "\n"
-
+        else:
+            print("The graph is empty")
         print(s)
-
-    def copy(self):
-        s = copy.copy(self._graph)
-        return s
-
-        s="\n"
-        print("\n\t"+self.prtint_dir())
-        if (self._graph):
-            for key in self._graph:
-                s+='\t{"'+str(key)+'"}:'+ str(self._graph[key])+"\n"
-        else: print("The graph is empty")
-        print(s)
-
-    def check(self):
-        for key in self._graph:
-            s =(key)
-        print (s)
 
     def add_connections(self, connections):
-
         for node1, node2 in connections:
             self.add_Edge(node1, node2)
 
     def add_Edge(self, node1, node2):
-
-        self._graph[node1].add(node2)
-        if not self._directed:
-            self._graph[node2].add(node1)
+        if self._graph[node1].add(node2):
+            print("Edge exist")
+            self._graph[node1].add(node2)
+            if not self._directed:
+                self._graph[node2].add(node1)
 
     def add_Node(self, node1):
-         self._graph[node1]
+        if self._graph[node1]:
+            print("node exist")
+        else:
+            self._graph[node1]
 
     def remove_Edge(self, node1, node2):
         self._graph[node1].remove(node2)
@@ -58,31 +42,27 @@ class Graph(object):
             self._graph[node2].remove(node1)
 
     def remove_Node(self, node):
+        if not self._graph[node]:
+            print("Node not exist")
+        else:
 
-        for n, cxns in self._graph.items():
+            for n, cxns in self._graph.items():
+                try:
+                    cxns.remove(node)
+                except KeyError:
+                    pass
             try:
-                cxns.remove(node)
+                del self._graph[node]
             except KeyError:
                 pass
-        try:
-            del self._graph[node]
-        except KeyError:
-            pass
 
     def is_connected(self, node1, node2):
         return node1 in self._graph and node2 in self._graph[node1]
-
 
     def write_in_file(self):
         s = ""
         for key in self._graph:
             s += '"' + str(key) + '":' + str(self._graph[key]) + ","
-
-
-    def write_in_file(self):
-        s = ""
-        for key in self._graph:
-            s+= '"'+str(key)+'":' + str(self._graph[key])+","
         newstring = s
         newstring = newstring.replace('}', ']')
         newstring = newstring.replace("'", '"')
@@ -128,16 +108,14 @@ class Graph(object):
         else:
             self._directed = False
         for value in data['datas']:
-
             s = (value)
-        print(s)
         z = ""
         for key in value:
             z += '"' + str(key) + '":' + str(value[key]) + ","
-        s=(value)
-        z=""
+        s = (value)
+        z = ""
         for key in value:
-            z+= '"'+str(key)+'":' + str(value[key])+","
+            z += '"' + str(key) + '":' + str(value[key]) + ","
 
         newstring = z
         newstring = newstring.replace('}', ']')
@@ -155,27 +133,25 @@ class Graph(object):
                 self.add_Edge(n, a[n][i])
                 i += 1
 
-            i=0
-            while(len(a[n])>i):
-                self.add_Edge(n,a[n][i])
-                i+=1
-
     def prtint_dir(self):
-        if(self._directed):
+        if (self._directed):
             return "directed"
         else:
             return "undirected"
 
-    def unchild(self):
+    def task1_la(self):
+        iz = []
         for key in self._graph:
-            if((self._graph[key])!=set()):
-               z = (self._graph[key])
-               while (z):
-                a=z.pop()
-                print(a)
+            if (self._graph[key]) == set() or self._graph[key] == {key}:
+                flag = True
+                for key2 in self._graph:
+                    if key in self._graph[key2] and key != key2:
+                        flag = False
+                if flag:
+                    iz.append({key})
+        print("Isolated nodes", iz)
 
-
-
-
-
-
+    def task2_la(self):
+        print("Write node")
+        node = input()
+        print(self._graph[node])
