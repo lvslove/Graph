@@ -6,55 +6,56 @@ import copy
 class Graph(object):
 
     def __init__(self, directed=False):
-        self._graph = defaultdict(set)
         self._directed = directed
+        self._graph = defaultdict(set)
         # self.add_connections(connections)
 
     def nice_print(self):
         s = "\n"
-        print(self._directed)
+        print("Graph")
+        print(self.print_dir())
         for key in self._graph:
             s += '\t{"' + str(key) + '"}:' + str(self._graph[key]) + "\n"
-        else:
-            print("The graph is empty")
+
         print(s)
 
     def add_connections(self, connections):
         for node1, node2 in connections:
             self.add_Edge(node1, node2)
 
+
+
+
     def add_Edge(self, node1, node2):
-        if self._graph[node1].add(node2):
-            print("Edge exist")
-            self._graph[node1].add(node2)
-            if not self._directed:
-                self._graph[node2].add(node1)
+        self._graph[node1].add(node2)
+        if not self._directed:
+            self._graph[node2].add(node1)
 
     def add_Node(self, node1):
-        if self._graph[node1]:
-            print("node exist")
-        else:
-            self._graph[node1]
+        self._graph[node1]
+
 
     def remove_Edge(self, node1, node2):
-        self._graph[node1].remove(node2)
-        if not self._directed:
-            self._graph[node2].remove(node1)
+        if not (self._graph.get(node1).isdisjoint({node2})):
+            self._graph[node1].remove(node2)
+            if not self._directed:
+                self._graph[node2].remove(node1)
+        else:
+            print("Edge not exist")
+
+
 
     def remove_Node(self, node):
-        if not self._graph[node]:
-            print("Node not exist")
-        else:
-
-            for n, cxns in self._graph.items():
-                try:
-                    cxns.remove(node)
-                except KeyError:
-                    pass
+        for n, cxns in self._graph.items():
             try:
-                del self._graph[node]
+                cxns.remove(node)
             except KeyError:
                 pass
+        try:
+            del self._graph[node]
+        except KeyError:
+            print("Node", node, "not exist")
+            pass
 
     def is_connected(self, node1, node2):
         return node1 in self._graph and node2 in self._graph[node1]
@@ -108,15 +109,10 @@ class Graph(object):
         else:
             self._directed = False
         for value in data['datas']:
-            s = (value)
+            s = value
         z = ""
         for key in value:
             z += '"' + str(key) + '":' + str(value[key]) + ","
-        s = (value)
-        z = ""
-        for key in value:
-            z += '"' + str(key) + '":' + str(value[key]) + ","
-
         newstring = z
         newstring = newstring.replace('}', ']')
         newstring = newstring.replace("'", '"')
@@ -129,12 +125,12 @@ class Graph(object):
             self.add_Node(n)
 
             i = 0
-            while (len(a[n]) > i):
+            while len(a[n]) > i:
                 self.add_Edge(n, a[n][i])
                 i += 1
 
-    def prtint_dir(self):
-        if (self._directed):
+    def print_dir(self):
+        if self._directed:
             return "directed"
         else:
             return "undirected"
