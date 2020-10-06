@@ -23,9 +23,6 @@ class Graph(object):
         for node1, node2 in connections:
             self.add_Edge(node1, node2)
 
-
-
-
     def add_Edge(self, node1, node2):
         self._graph[node1].add(node2)
         if not self._directed:
@@ -34,7 +31,6 @@ class Graph(object):
     def add_Node(self, node1):
         self._graph[node1]
 
-
     def remove_Edge(self, node1, node2):
         if not (self._graph.get(node1).isdisjoint({node2})):
             self._graph[node1].remove(node2)
@@ -42,8 +38,6 @@ class Graph(object):
                 self._graph[node2].remove(node1)
         else:
             print("Edge not exist")
-
-
 
     def remove_Node(self, node):
         for n, cxns in self._graph.items():
@@ -151,3 +145,11 @@ class Graph(object):
         print("Write node")
         node = input()
         print(self._graph[node])
+
+
+    def task3(g1,g2):
+        if g2._graph.items() == g1._graph.items():
+            print(True)
+        else:
+            print(False)
+

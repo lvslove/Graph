@@ -1,9 +1,6 @@
 from graph import Graph
 import copy
 
-from graph import Graph
-import copy
-
 y = True
 print("\n\t You need to initialize the graph")
 while y:
