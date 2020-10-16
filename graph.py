@@ -29,7 +29,7 @@ class Graph(object):
             self._graph[node2].add(node1)
 
     def add_Node(self, node1):
-        self._graph[node1]
+        var = self._graph[node1]
 
     def remove_Edge(self, node1, node2):
         if not (self._graph.get(node1).isdisjoint({node2})):
@@ -144,12 +144,55 @@ class Graph(object):
     def task2_la(self):
         print("Write node")
         node = input()
-        print(self._graph[node])
+        s = []
+        z = []
+        for i in self._graph.keys():
+            for j in self._graph[i]:
+                s.append((j, i))
+        for i in range(0, len(s)):
+            if s[i][0] == node:
+                z.append(s[i][1])
+            elif s[i][1] == node:
+                z.append(s[i][0])
+        print("All reachable node from", node, z)
 
-
-    def task3(g1,g2):
+    def task3(g1, g2):
         if g2._graph.items() == g1._graph.items():
             print(True)
+            print("Graps match")
         else:
             print(False)
+            print("Graps no match")
 
+    def DFS(self, node, visited=None):
+        if visited is None:
+            visited = set()
+        visited.add(node)
+        print(node)
+        for next in self._graph[node] - visited:
+            self.DFS(next,visited)
+        return visited
+
+
+    def DFST(self, node, visited=None):
+        if visited is None:
+            visited = set()
+        visited.add(node)
+        print(node)
+        for next in self._graph[node] - visited:
+            self.DFST(next, visited)
+
+
+    def scc(self):
+        c=1
+        print(len(self._graph.items()))
+
+
+    def invert_list(self,g2):
+        s = []
+        print("invert Graph")
+        for i in self._graph.keys():
+            for j in self._graph[i]:
+                s.append((j, i))
+                g2.add_Edge(j[0], i[0])
+        return g2
