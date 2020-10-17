@@ -1,6 +1,7 @@
 import json
 from collections import defaultdict
 import copy
+from typing import List, Any
 
 
 class Graph(object):
@@ -156,43 +157,55 @@ class Graph(object):
                 z.append(s[i][0])
         print("All reachable node from", node, z)
 
-    def task3(g1, g2):
-        if g2._graph.items() == g1._graph.items():
+    def task3(self, g2):
+        if g2._graph.items() == self._graph.items():
             print(True)
             print("Graps match")
         else:
             print(False)
             print("Graps no match")
 
-    def DFS(self, node, visited=None):
+    def dfs(self, node,time,visited=None,entry=None,leave=None):
+
+        time += 1
+        entry[node].add('time')
+
         if visited is None:
             visited = set()
         visited.add(node)
         print(node)
-        for next in self._graph[node] - visited:
-            self.DFS(next,visited)
-        return visited
+        for nxt in self._graph[node] - visited:
+            self.dfs(nxt,time,visited,entry,leave)
+        time +=1
+        leave[node].add('time')
 
-
-    def DFST(self, node, visited=None):
-        if visited is None:
-            visited = set()
-        visited.add(node)
-        print(node)
-        for next in self._graph[node] - visited:
-            self.DFST(next, visited)
-
-
-    def scc(self):
-        c=1
-        print(len(self._graph.items()))
-
-
-    def invert_list(self,g2):
+    def invert_list(self, g2):
         s = []
         print("invert Graph")
         for i in self._graph.keys():
-            for j in self._graph[i]:
-                s.append((j, i))
-                g2.add_Edge(j[0], i[0])
+            if self._graph[i] == set():
+                g2.add_Node(i)
+            else:
+                for j in self._graph[i]:
+                    g2.add_Edge(j, i)
         return g2
+
+    def all_nodes(self):
+        s = []
+        for i in self._graph.keys():
+            s.append(i)
+            for j in self._graph[i]:
+                s.append(j)
+        woduplicates = set(s)
+        return woduplicates
+
+    def task5(self):
+        entry = defaultdict(set)
+        leave = defaultdict(set)
+        s = self.all_nodes()
+        for i in s:
+            entry[i].add('0')
+            leave[i].add('0')
+        time = 0
+        self.dfs(list(self._graph.keys())[0],time,None,entry,leave)
+        print(entry,leave)
