@@ -1,5 +1,6 @@
 import json
 from collections import defaultdict
+
 import copy
 from typing import List, Any
 
@@ -165,19 +166,18 @@ class Graph(object):
             print(False)
             print("Graps no match")
 
-    def dfs(self, node,time,visited=None,entry=None,leave=None):
-
+    def dfs(self, node, time, visited=None, entry=None, leave=None):
         time += 1
-        entry[node].add('time')
+        entry[node].add(time)
 
         if visited is None:
             visited = set()
         visited.add(node)
-        print(node)
+        #print(node)
         for nxt in self._graph[node] - visited:
-            self.dfs(nxt,time,visited,entry,leave)
-        time +=1
-        leave[node].add('time')
+            self.dfs(nxt, time, visited, entry, leave)
+        time += 1
+        leave[node].add(time)
 
     def invert_list(self, g2):
         s = []
@@ -188,7 +188,7 @@ class Graph(object):
             else:
                 for j in self._graph[i]:
                     g2.add_Edge(j, i)
-        return g2
+        return g2.nice_print()
 
     def all_nodes(self):
         s = []
@@ -199,13 +199,23 @@ class Graph(object):
         woduplicates = set(s)
         return woduplicates
 
-    def task5(self):
-        entry = defaultdict(set)
-        leave = defaultdict(set)
-        s = self.all_nodes()
-        for i in s:
-            entry[i].add('0')
-            leave[i].add('0')
-        time = 0
-        self.dfs(list(self._graph.keys())[0],time,None,entry,leave)
-        print(entry,leave)
+    def list_sm(self):
+        s = []
+        adj = [[] for i in range(len(self.all_nodes()))]
+        for i in self._graph.keys():
+            for j in self._graph[i]:
+                s.append((int(i), int(j)))
+                adj[int(i) - 1].append(int(j) - 1)
+        return adj
+
+    def list_invert(self):
+        s = []
+        adjT = [[] for i in range(len(self.all_nodes()))]
+        for i in self._graph.keys():
+            for j in self._graph[i]:
+                s.append((int(i), int(j)))
+                adjT[int(j) - 1].append(int(i) - 1)
+        return adjT
+
+
+
