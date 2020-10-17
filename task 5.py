@@ -43,7 +43,7 @@ def run():
         if not used[v]:
             ccs(v, componentID)
             componentID = componentID + 1
-    print("Колличество компонент сильной связности =", componentID)  # выводим количество компонент сильной связности
+    print("\nКолличество компонент сильной связности =", componentID)  # выводим количество компонент сильной связности
 
     # for v in component:
     # print(v + 1, end=' ')
@@ -71,5 +71,13 @@ while i < count_nodes - 1:
     elif s[i] != s[i + 1]:
         j += 1
         i += 1
-print("Компоненты связности")
+print("\nКомпоненты связности")
 print(final.items())
+
+print("\n\ntask 6")
+print("Введите вершину")
+n = input()
+for i in final.values():
+    if int(n) in i:
+        print(i)
+
