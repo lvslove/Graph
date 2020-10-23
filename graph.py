@@ -199,14 +199,40 @@ class Graph(object):
         woduplicates = set(s)
         return woduplicates
 
+    def key_val(self):
+        i = 0
+        d = defaultdict(set)
+        for j in self.all_nodes():
+            d[i].add(j)
+            i += 1
+        return d
+
     def list_sm(self):
         s = []
+        d = self.key_val()
         adj = [[] for i in range(len(self.all_nodes()))]
         for i in self._graph.keys():
             for j in self._graph[i]:
-                s.append((int(i), int(j)))
-                adj[int(i) - 1].append(int(j) - 1)
+                s.append((i, j))
+                adj[int(i)-1].append(int(j)-1)
         return adj
+        #return s
+
+    def list_sm2(self):
+        s = []
+        d = self.key_val()
+        #print(d)
+        adj = [[] for i in range(len(self.all_nodes()))]
+        for i in self._graph.keys():
+            for j in self._graph[i]:
+                s.append((i, j))
+        for z in d.keys():
+                    #print(z)
+            for y in d[z]:
+                print(z,y)
+
+        return adj
+
 
     def list_invert(self):
         s = []

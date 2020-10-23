@@ -13,7 +13,6 @@ color = [int(0) for i in range(count_nodes)]  # массив для хранен
 topSort = []  # топологически упорядоченная перестановка вершин графа
 component = [int(0) for i in range(count_nodes)]  # массив для обозначения компонент сильной связности орграфа
 
-
 def dfs(v):
     if used[v]:
         return
