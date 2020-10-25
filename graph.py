@@ -1,9 +1,6 @@
 import json
 from collections import defaultdict
 
-import copy
-from typing import List, Any
-
 
 class Graph(object):
 
@@ -166,29 +163,15 @@ class Graph(object):
             print(False)
             print("Graps no match")
 
-    def dfs(self, node, time, visited=None, entry=None, leave=None):
-        time += 1
-        entry[node].add(time)
-
-        if visited is None:
-            visited = set()
-        visited.add(node)
-        #print(node)
-        for nxt in self._graph[node] - visited:
-            self.dfs(nxt, time, visited, entry, leave)
-        time += 1
-        leave[node].add(time)
-
-    def invert_list(self, g2):
-        s = []
-        print("invert Graph")
+    def invert_list(self):
+        g2 = Graph(True)
         for i in self._graph.keys():
             if self._graph[i] == set():
                 g2.add_Node(i)
             else:
                 for j in self._graph[i]:
                     g2.add_Edge(j, i)
-        return g2.nice_print()
+        return g2
 
     def all_nodes(self):
         s = []
@@ -207,32 +190,39 @@ class Graph(object):
             i += 1
         return d
 
+    def searc_number(self, a):
+        d = self.key_val()
+        for i in d.keys():
+            for j in d[i]:
+                if (j == a):
+                    return i
+
+    def set_num(self):
+        nwe = defaultdict(set)
+        for i in self._graph.keys():
+            for j in self._graph[i]:
+                nwe[self.searc_number(i)].add(self.searc_number(j))
+        return nwe
+
     def list_sm(self):
         s = []
-        d = self.key_val()
         adj = [[] for i in range(len(self.all_nodes()))]
         for i in self._graph.keys():
             for j in self._graph[i]:
-                s.append((i, j))
-                adj[int(i)-1].append(int(j)-1)
+                s.append((int(i), int(j)))
+                adj[int(i) - 1].append(int(j) - 1)
         return adj
-        #return s
+        # return s
 
     def list_sm2(self):
         s = []
-        d = self.key_val()
-        #print(d)
         adj = [[] for i in range(len(self.all_nodes()))]
-        for i in self._graph.keys():
-            for j in self._graph[i]:
+        for i in self.set_num().keys():
+            for j in self.set_num()[i]:
+                adj[i].append(j)
                 s.append((i, j))
-        for z in d.keys():
-                    #print(z)
-            for y in d[z]:
-                print(z,y)
-
+        # return s
         return adj
-
 
     def list_invert(self):
         s = []
@@ -243,5 +233,56 @@ class Graph(object):
                 adjT[int(j) - 1].append(int(i) - 1)
         return adjT
 
+    def dfs(self, node, vis, order):
+        vis[node] = True
+        for i in self._graph[node]:
+            if not (i in vis):
+                self.dfs(i, vis, order)
+        order.append(node)
 
+    def dfsT(self, node, vis, comp):
+        comp.append(node)
+        vis[node] = True
+        for i in self._graph[node]:
+            if not (i in vis):
+                self.dfsT(i, vis, comp)
 
+    def Task5(self):
+        comp = []
+        vis = dict()
+        dnew = self.invert_list()
+        order = []
+        for i in self._graph.keys():
+            if not (i in vis):
+                self.dfs(i, vis, order)
+        vis = dict()
+        order.reverse()
+        for i in order:
+            if not (i in vis):
+                dnew.dfsT(i, vis, comp)
+                comp.append("n")
+        return comp
+
+    def comp_Tasl5(self):
+        s = defaultdict(set)
+
+        z = 0
+        for i in self.Task5():
+            if i != "n":
+                s[z].add(i)
+            else:
+                z += 1
+        return s
+
+    def print_comp_Task5(self):
+        print("\nВывезти сильно связные компоненты графа")
+        o = "\n"
+        for key in self.comp_Tasl5():
+            o += "номер сильно связной компоненты " + str(key) + ": " + str(self.comp_Tasl5()[key]) + "\n"
+        print(o)
+
+    def Task6(self, n):
+        print("\nКратчайщий цикл")
+        for i in self.comp_Tasl5().values():
+            if str(n) in i:
+                print(i)
