@@ -1,3 +1,4 @@
+import collections
 import json
 from collections import defaultdict
 
@@ -95,7 +96,8 @@ class Graph(object):
         self.write_in_file()
 
     def read_json(self):
-        with open('json/input.json', 'r', encoding='utf-8') as fh:  # открываем файл на чтение
+        with open('json/input.json', 'r',
+                  encoding='utf-8') as fh:  # открываем файл на чтение
             data = json.load(fh)
         if (data['directed']) == "yes":
             self._directed = True
@@ -247,6 +249,25 @@ class Graph(object):
             if not (i in vis):
                 self.dfsT(i, vis, comp)
 
+    def bfs(self, node):
+        visited, queue = set(), collections.deque([node])
+        res = []
+        visited.add(node)
+        while queue:
+            vertex = queue.popleft()
+            res.append(vertex)
+            for neighbour in self._graph[vertex]:
+                if neighbour in visited:
+                    print("blat")
+                    break
+                elif neighbour not in visited:
+                    visited.add(neighbour)
+                    queue.append(neighbour)
+        if len(res) == 1:
+            return 0
+        else:
+            return res
+
     def Task5(self):
         comp = []
         vis = dict()
@@ -278,7 +299,8 @@ class Graph(object):
         print("\nВывезти сильно связные компоненты графа")
         o = "\n"
         for key in self.comp_Tasl5():
-            o += "номер сильно связной компоненты " + str(key) + ": " + str(self.comp_Tasl5()[key]) + "\n"
+            o += "номер сильно связной компоненты " + str(key) + ": " + str(
+                self.comp_Tasl5()[key]) + "\n"
         print(o)
 
     def Task6(self, n):
