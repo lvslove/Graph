@@ -96,7 +96,7 @@ class Graph(object):
         self.write_in_file()
 
     def read_json(self):
-        with open('json/input.json', 'r',
+        with open('json/dich', 'r',
                   encoding='utf-8') as fh:  # открываем файл на чтение
             data = json.load(fh)
         if (data['directed']) == "yes":
@@ -257,16 +257,12 @@ class Graph(object):
             vertex = queue.popleft()
             res.append(vertex)
             for neighbour in self._graph[vertex]:
-                if neighbour in visited:
-                    print("blat")
-                    break
-                elif neighbour not in visited:
+                if neighbour not in visited:
                     visited.add(neighbour)
                     queue.append(neighbour)
-        if len(res) == 1:
-            return 0
-        else:
-            return res
+                else:
+                    return res
+        return None
 
     def Task5(self):
         comp = []
@@ -286,7 +282,6 @@ class Graph(object):
 
     def comp_Tasl5(self):
         s = defaultdict(set)
-
         z = 0
         for i in self.Task5():
             if i != "n":
@@ -302,9 +297,3 @@ class Graph(object):
             o += "номер сильно связной компоненты " + str(key) + ": " + str(
                 self.comp_Tasl5()[key]) + "\n"
         print(o)
-
-    def Task6(self, n):
-        print("\nКратчайщий цикл")
-        for i in self.comp_Tasl5().values():
-            if str(n) in i:
-                print(i)

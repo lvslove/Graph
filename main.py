@@ -52,14 +52,25 @@ while y:
     elif n == 8:
         g.nice_print()
     elif n == 9:
-        print("task 1")
-        print("write task")
-        print("1", "2")
+        # print("task 1")
+        # print("write task")
+        # print("1", "2")
+        # x = int(input())
+        # if x == 1:
+        #     (g.task1_la())
+        # if x == 2:
+        #     (g.task2_la())
+        print("1. write component (dfs)")
+        print("2. write min cicle (bfs)")
         x = int(input())
         if x == 1:
-            (g.task1_la())
-        if x == 2:
-            (g.task2_la())
+            g.print_comp_Task5()
+        elif x == 2:
+            print("Write node")
+            z = str(input())
+            print(g.bfs(z))
+        else:
+            print("exit to menu")
 
     elif n == 10:
         print("exit")
