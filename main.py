@@ -1,5 +1,4 @@
 from graph import Graph
-import copy
 
 y = True
 print("\n\t You need to initialize the graph")
@@ -31,6 +30,9 @@ while y:
         print("Write node")
         a = input()
         g.add_Node(a)
+        print("Write weight")
+        x = input()
+        g.add_Weight(a, x)
     elif n == 3:
         print("Write nodes")
         a = input()
@@ -52,14 +54,6 @@ while y:
     elif n == 8:
         g.nice_print()
     elif n == 9:
-        # print("task 1")
-        # print("write task")
-        # print("1", "2")
-        # x = int(input())
-        # if x == 1:
-        #     (g.task1_la())
-        # if x == 2:
-        #     (g.task2_la())
         print("1. write component (dfs)")
         print("2. write min cicle (bfs)")
         x = int(input())

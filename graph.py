@@ -8,16 +8,28 @@ class Graph(object):
     def __init__(self, directed=False):
         self._directed = directed
         self._graph = defaultdict(set)
+        self.weight = defaultdict(set)
         # self.add_connections(connections)
 
+    def add_Weight(self, node, x):
+        self.weight[node].clear()
+        if x == '':
+            self.weight[node].add("default")
+        else:
+            self.weight[node].add(x)
+
+
     def nice_print(self):
-        s = "\n"
+        s, s2 = "\n", "\n"
         print("Graph")
         print(self.print_dir())
         for key in self._graph:
             s += '\t{"' + str(key) + '"}:' + str(self._graph[key]) + "\n"
-
         print(s)
+        print("Weight")
+        for key in self.weight:
+            s2 += '\t{"' + str(key) + '"}:' + str(self.weight[key]) + "\n"
+        print(s2)
 
     def add_connections(self, connections):
         for node1, node2 in connections:
@@ -40,9 +52,9 @@ class Graph(object):
             print("Edge not exist")
 
     def remove_Node(self, node):
-        for n, cxns in self._graph.items():
+        for n, scans in self._graph.items():
             try:
-                cxns.remove(node)
+                scans.remove(node)
             except KeyError:
                 pass
         try:
@@ -51,84 +63,97 @@ class Graph(object):
             print("Node", node, "not exist")
             pass
 
-    def is_connected(self, node1, node2):
-        return node1 in self._graph and node2 in self._graph[node1]
+    # def is_connected(self, node1, node2):
+    #     return node1 in self._graph and node2 in self._graph[node1]
 
     def write_in_file(self):
+        self.update_file()
         s = ""
         for key in self._graph:
             s += '"' + str(key) + '":' + str(self._graph[key]) + ","
-        newstring = s
-        newstring = newstring.replace('}', ']')
-        newstring = newstring.replace("'", '"')
-        newstring = newstring.replace('{', '[')
-        newstring = newstring.replace('set()', '{}')
-        s = "{" + newstring + "}"
-        newstring = s[:-2]
-        newstring2 = newstring + "}"
+        nesting = s
+        nesting = nesting.replace('}', ']')
+        nesting = nesting.replace("'", '"')
+        nesting = nesting.replace('{', '[')
+        nesting = nesting.replace('set()', '{}')
+        s = "{" + nesting + "}"
+        nesting = s[:-2]
+        nesting2 = nesting + "}"
         if self._directed:
-            newstring3 = "yes"
+            nestling3 = "yes"
         else:
-            newstring3 = "no"
-
-        d = json.loads(newstring2)
+            nestling3 = "no"
+        z = str(self.weight)
+        new = z[27:-2].replace("{", "").replace("}", "").replace("'", '"')
+        res = "{" + new + "}"
+        d = json.loads(nesting2)
+        w = json.loads(res)
         file_path = 'json/output.json'
         with open(file_path) as f:
             data = json.load(f)
             data['datas'].append(d)
-            data['directed'] = newstring3
+            data['directed'] = nestling3
+            data['weight'].append(w)
 
             with open(file_path, 'w') as outfile:
                 json.dump(data, outfile)
 
-    def update_file(self):
-        def clear_json():
-            file_path = 'json/output.json'
-            with open(file_path) as f:
-                data = json.load(f)
-                data['datas'] = []
-                data['directed'] = []
-
-                with open(file_path, 'w') as outfile:
-                    json.dump(data, outfile)
-
-        clear_json()
-        self.write_in_file()
+    @staticmethod
+    def update_file():
+        file_path = 'json/output.json'
+        with open(file_path) as f:
+            data = json.load(f)
+            data['datas'] = []
+            data['directed'] = []
+            data['weight'] = []
+            with open(file_path, 'w') as outfile:
+                json.dump(data, outfile)
 
     def read_json(self):
-        with open('json/dich', 'r',
+        with open('json/input.json', 'r',
                   encoding='utf-8') as fh:  # открываем файл на чтение
             data = json.load(fh)
         if (data['directed']) == "yes":
             self._directed = True
         else:
             self._directed = False
-        for value in data['datas']:
-            s = value
         z = ""
-        for key in value:
-            z += '"' + str(key) + '":' + str(value[key]) + ","
-        newstring = z
-        newstring = newstring.replace('}', ']')
-        newstring = newstring.replace("'", '"')
-        newstring = newstring.replace('{', '[')
-        z = "{" + newstring + "}"
-        newstring = z[:-2]
-        newstring2 = newstring + "}"
-        a = json.loads(newstring2)
+        for value in data['datas']:
+            for key in value:
+                z += '"' + str(key) + '":' + str(value[key]) + ","
+            nesting = z
+            nesting = nesting.replace('}', ']')
+            nesting = nesting.replace("'", '"')
+            nesting = nesting.replace('{', '[')
+            z = "{" + nesting + "}"
+            nesting = z[:-2]
+            nesting2 = nesting + "}"
+            a = json.loads(nesting2)
         for n in a:
             self.add_Node(n)
-
             i = 0
             while len(a[n]) > i:
                 self.add_Edge(n, a[n][i])
                 i += 1
+        z2 = "{"
+        for value in data['weight']:
+            for key in value:
+                if value[key] != "":
+                    z2 += '"' + str(key) + '":"' + str(value[key]) + '",'
+                else:
+                    z2 += '"' + str(key) + '":' + '"default"' + ","
+
+        nesting = z2[:-1]
+        nesting += '}'
+        a = json.loads(nesting)
+        for i in self._graph.keys():
+            self.weight[i].add(a[i])
 
     def print_dir(self):
         if self._directed:
-            return "directed"
+            return "Directed"
         else:
-            return "undirected"
+            return "Undirected"
 
     def task1_la(self):
         iz = []
@@ -157,8 +182,8 @@ class Graph(object):
                 z.append(s[i][0])
         print("All reachable node from", node, z)
 
-    def task3(self, g2):
-        if g2._graph.items() == self._graph.items():
+    def task3(self, self2):
+        if self2._graph.items() == self._graph.items():
             print(True)
             print("Graps match")
         else:
@@ -181,8 +206,8 @@ class Graph(object):
             s.append(i)
             for j in self._graph[i]:
                 s.append(j)
-        woduplicates = set(s)
-        return woduplicates
+        duplicates = set(s)
+        return duplicates
 
     def key_val(self):
         i = 0
@@ -192,18 +217,18 @@ class Graph(object):
             i += 1
         return d
 
-    def searc_number(self, a):
+    def search_number(self, a):
         d = self.key_val()
         for i in d.keys():
             for j in d[i]:
-                if (j == a):
+                if j == a:
                     return i
 
     def set_num(self):
         nwe = defaultdict(set)
         for i in self._graph.keys():
             for j in self._graph[i]:
-                nwe[self.searc_number(i)].add(self.searc_number(j))
+                nwe[self.search_number(i)].add(self.search_number(j))
         return nwe
 
     def list_sm(self):
@@ -214,7 +239,6 @@ class Graph(object):
                 s.append((int(i), int(j)))
                 adj[int(i) - 1].append(int(j) - 1)
         return adj
-        # return s
 
     def list_sm2(self):
         s = []
@@ -223,17 +247,16 @@ class Graph(object):
             for j in self.set_num()[i]:
                 adj[i].append(j)
                 s.append((i, j))
-        # return s
         return adj
 
     def list_invert(self):
-        s = []
-        adjT = [[] for i in range(len(self.all_nodes()))]
+        s = list()
+        adj = [[] for i in range(len(self.all_nodes()))]
         for i in self._graph.keys():
             for j in self._graph[i]:
                 s.append((int(i), int(j)))
-                adjT[int(j) - 1].append(int(i) - 1)
-        return adjT
+                adj[int(j) - 1].append(int(i) - 1)
+        return adj
 
     def dfs(self, node, vis, order):
         vis[node] = True
@@ -267,7 +290,7 @@ class Graph(object):
     def Task5(self):
         comp = []
         vis = dict()
-        dnew = self.invert_list()
+        new = self.invert_list()
         order = []
         for i in self._graph.keys():
             if not (i in vis):
@@ -276,11 +299,11 @@ class Graph(object):
         order.reverse()
         for i in order:
             if not (i in vis):
-                dnew.dfsT(i, vis, comp)
+                new.dfsT(i, vis, comp)
                 comp.append("n")
         return comp
 
-    def comp_Tasl5(self):
+    def comp_Task_5(self):
         s = defaultdict(set)
         z = 0
         for i in self.Task5():
@@ -293,7 +316,7 @@ class Graph(object):
     def print_comp_Task5(self):
         print("\nВывезти сильно связные компоненты графа")
         o = "\n"
-        for key in self.comp_Tasl5():
+        for key in self.comp_Task_5():
             o += "номер сильно связной компоненты " + str(key) + ": " + str(
-                self.comp_Tasl5()[key]) + "\n"
+                self.comp_Task_5()[key]) + "\n"
         print(o)
