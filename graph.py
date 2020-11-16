@@ -18,7 +18,6 @@ class Graph(object):
         else:
             self.weight[node].add(x)
 
-
     def nice_print(self):
         s, s2 = "\n", "\n"
         print("Graph")
@@ -154,6 +153,18 @@ class Graph(object):
             return "Directed"
         else:
             return "Undirected"
+
+    def NIK_task1_9(self, node):
+        for i in self._graph.values():
+            if i == node:
+                print(i)
+        print(self.all_nodes() - self._graph[node] - set(node))
+
+    def NIK_task3_xz(self, self2):
+        for i in self._graph.keys():
+            for j in self2._graph.keys():
+                if i == j:
+                    print(i, ":", self._graph[i].intersection(self2._graph[j]))
 
     def task1_la(self):
         iz = []
