@@ -1,4 +1,6 @@
 import collections
+from pprint import pprint
+
 import json
 from collections import defaultdict
 
@@ -9,15 +11,8 @@ class Graph(object):
         self._directed = directed
         self._graph = defaultdict(set)
         self.weight = defaultdict(set)
+        self.graph = []  # default dictionary
         # self.add_connections(connections)
-
-    def add_Weight(self, node, x):
-        self.weight[node].clear()
-        if x == '':
-            self.weight[node].add("default")
-        else:
-            self.weight[node].add(x)
-
 
     def nice_print(self):
         s, s2 = "\n", "\n"
@@ -59,6 +54,7 @@ class Graph(object):
                 pass
         try:
             del self._graph[node]
+            del self.weight[node]
         except KeyError:
             print("Node", node, "not exist")
             pass
@@ -320,3 +316,189 @@ class Graph(object):
             o += "номер сильно связной компоненты " + str(key) + ": " + str(
                 self.comp_Task_5()[key]) + "\n"
         print(o)
+
+    def dfs_c(self, visited, node, list1):
+        if node not in visited:
+            list1.append(node)
+            visited.add(node)
+            for neighbour in self._graph[node]:
+                self.dfs_c(visited, neighbour, list1)
+        return list1
+
+    def check_connected(self):
+        list1 = []
+        keys = list(self._graph.keys())
+        visited = set()
+        if len(self.dfs_c(visited, keys[0], list1)) == self.len_node():
+            return True
+        else:
+            return False
+
+    def number_node(self):
+        num = []
+        j = 0
+        a = list(self.all_nodes())
+        while a:
+            num.append([a.pop(), j])
+            j += 1
+        print(num)
+
+    def list_m(self):
+        s = []
+        for i in list(self._graph.keys()):
+            a = list(self._graph[i])
+            while a:
+                s.append([i, a.pop()])
+        return s
+
+    # [номер, смежная вершина, вес]
+
+    def list_num(self):
+        s = []
+        a = (self.list_m())
+        while a:
+            s.append(
+                [
+                    self.search_number(a[0][0]),
+                    self.search_number(a[0][1]),
+                    999999
+                ]
+            )
+            a.pop(0)
+        return sorted(s)
+
+    def addEdge(self, u, v, w):
+        self.graph.append([u, v, w])
+        self._graph[u].add(v)
+        self._graph[v].add(u)
+        # find set of an element i
+
+    def union(self, parent, rank, x, y):
+        xroot = self.find(parent, x)
+        yroot = self.find(parent, y)
+        if rank[xroot] < rank[yroot]:
+            parent[xroot] = yroot
+        elif rank[xroot] > rank[yroot]:
+            parent[yroot] = xroot
+        else:
+            parent[yroot] = xroot  # Make one as root and increment.
+            rank[xroot] += 1
+
+    def find(self, parent, i):
+        if parent[i] == i:
+            return i
+        return self.find(parent, parent[i])
+
+    def boruvkaMST(self):
+        parent = []
+        rank = []
+        cheapest = []
+        numTrees = self.len_node()
+        MSTweight = 0
+        if self.check_connected():
+            for node in range(self.len_node()):
+                parent.append(node)
+                rank.append(0)
+                cheapest = [-1] * self.len_node()
+                # Keep combining components (or sets) until all
+            # compnentes are not combined into single MST
+            while numTrees > 1:
+                for i in range(len(self.new_list())):
+                    u, v, w = self.new_list()[i]
+                    set1 = self.find(parent, u)
+                    set2 = self.find(parent, v)
+
+                    if set1 != set2:
+                        if cheapest[set1] == -1 or cheapest[set1][2] > w:
+                            cheapest[set1] = [u, v, w]
+                        if cheapest[set2] == -1 or cheapest[set2][2] > w:
+                            cheapest[set2] = [u, v, w]
+                # Consider the above picked cheapest edges and add them to MST
+                for node in range(self.len_node()):
+                    if cheapest[node] != -1:
+                        u, v, w = cheapest[node]
+                        set1 = self.find(parent, u)
+                        set2 = self.find(parent, v)
+                        if set1 != set2:
+                            MSTweight += w
+                            self.union(parent, rank, set1, set2)
+                            print(
+                                "Edge",
+                                self.search_key(u),
+                                "-",
+                                self.search_key(v),
+                                "has weight",
+                                w,
+                                "is included in MST"
+                            )
+                            numTrees = numTrees - 1
+
+                cheapest = [-1] * self.len_node()
+            print("Weight of MST is %d" % MSTweight)
+        else:
+            print("Graph not connected")
+
+    def new_read(self):
+        with open('json/dich.json', 'r',
+                  encoding='utf-8') as f:
+            text = json.load(f)
+            if (text['directed']) == "yes":
+                self._directed = True
+            else:
+                self._directed = False
+            s = []
+            for i in text["datas"].keys():
+                for j in (text["datas"][i].items()):
+                    s.append([i, j[0], j[1]])
+        return sorted(s)
+
+    def new_print(self):
+        print("Graph")
+        print(self.print_dir())
+        for i in self.new_read():
+            print("Node:", i[0], "->", i[1], ": weight =", i[2])
+
+    def node(self):
+        node = set()
+        with open('json/dich.json', 'r',
+                  encoding='utf-8') as f:
+            text = json.load(f)
+            for i in text["datas"].keys():
+                for j in (text["datas"][i].items()):
+                    node.add(i)
+                    node.add(j[0])
+        return sorted(node)
+
+    def num_node(self):
+        j = 0
+        num_node = defaultdict(set)
+        for i in self.node():
+            num_node[i].add(j)
+            j += 1
+        return num_node
+
+    def search_num(self, node):
+        return list(self.num_node()[node])[0]
+
+    def search_key(self, value):
+        for i, j in (self.num_node().items()):
+            if list(j)[0] == value:
+                return i
+
+    def new_list(self):
+        s = []
+        a = (self.new_read())
+        while a:
+            s.append(
+                [
+                    self.search_num(a[0][0]),
+                    self.search_num(a[0][1]),
+                    a[0][2]
+                ]
+            )
+            self.addEdge(a[0][0], a[0][1], a[0][2])
+            a.pop(0)
+        return sorted(s)
+
+    def len_node(self):
+        return len(self.num_node())
