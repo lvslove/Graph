@@ -11,7 +11,10 @@ class Graph(object):
         self._directed = directed
         self._graph = defaultdict(set)
         self.weight = defaultdict(set)
+        self.edges = defaultdict(list)
         self.graph = []  # default dictionary
+        self.distances = {}
+
         # self.add_connections(connections)
 
     def nice_print(self):
@@ -371,6 +374,10 @@ class Graph(object):
         self.graph.append([u, v, w])
         self._graph[u].add(v)
         self._graph[v].add(u)
+        self.edges[u].append(v)
+        self.edges[v].append(u)
+        self.distances[(u, v)] = w
+        self.distances[(v, u)] = w
         # find set of an element i
 
     def union(self, parent, rank, x, y):
@@ -502,3 +509,50 @@ class Graph(object):
 
     def len_node(self):
         return len(self.num_node())
+
+    def dijsktra(graph, initial):
+        visited = {initial: 0}
+        path = {}
+        nodes = set(graph.node())
+        while nodes:
+            min_node = None
+            for node in nodes:
+                if node in visited:
+                    if min_node is None:
+                        min_node = node
+                    elif visited[node] < visited[min_node]:
+                        min_node = node
+            if min_node is None:
+                break
+            nodes.remove(min_node)
+            current_weight = visited[min_node]
+
+            for edge in graph.edges[min_node]:
+                weight = current_weight + graph.distances[(min_node, edge)]
+                if edge not in visited or weight < visited[edge]:
+                    visited[edge] = weight
+                    path[edge] = min_node
+        return visited, path
+
+    def nice_print_dijskra(self):
+        for i in self.node():
+            print("Node", i)
+            print(
+                "Минимальное расстояние до каждой вершины:"
+            )
+            for j in self.node():
+                print(
+                    j,
+                    "->",
+                    self.dijsktra(i)[0][j]
+                )
+            print(self.dijsktra(i)[0])
+            print(
+                "Путь до каждой вершины"
+            )
+            print(self.dijsktra(i)[1])
+            print("-"*40)
+
+
+
+
