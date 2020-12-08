@@ -1,8 +1,8 @@
 import collections
-from pprint import pprint
+from collections import defaultdict
+
 
 import json
-from collections import defaultdict
 
 
 class Graph(object):
@@ -14,7 +14,7 @@ class Graph(object):
         self.edges = defaultdict(list)
         self.graph = []  # default dictionary
         self.distances = {}
-
+        self.graph_num = []
         # self.add_connections(connections)
 
     def nice_print(self):
@@ -200,13 +200,8 @@ class Graph(object):
         return g2
 
     def all_nodes(self):
-        s = []
-        for i in self._graph.keys():
-            s.append(i)
-            for j in self._graph[i]:
-                s.append(j)
-        duplicates = set(s)
-        return duplicates
+        return self._graph.keys()
+
 
     def key_val(self):
         i = 0
@@ -378,6 +373,7 @@ class Graph(object):
         self.edges[v].append(u)
         self.distances[(u, v)] = w
         self.distances[(v, u)] = w
+        self.graph_num.append([self.search_number(u), self.search_number(v), w])
         # find set of an element i
 
     def union(self, parent, rank, x, y):
@@ -551,8 +547,63 @@ class Graph(object):
                 "Путь до каждой вершины"
             )
             print(self.dijsktra(i)[1])
-            print("-"*40)
+            print("-" * 40)
 
+    def min_dist(self, node):
+        print("\nNode", node)
+        print("Min distance")
+        print("-" * 40)
+        for j in self.node():
+            print(
+                j,
+                "->",
+                self.dijsktra(node)[0][j]
+            )
+        print("-" * 40)
+
+    def printArr(self, dist):
+        print("Vertex Distance from Source")
+        for i in self.all_nodes():
+            print(
+                i,
+                "------->",
+                dist[self.search_number(i)]
+            )
+
+        # The main function that finds shortest distances from src to
+
+    # all other vertices using Bellman-Ford algorithm. The function
+    # also detects negative weight cycle
+    def BellmanFord(self, src):
+
+        # Step 1: Initialize distances from src to all other vertices
+        # as INFINITE
+        dist = [9999] * len(self.all_nodes())
+        dist[src] = 0
+
+        # Step 2: Relax all edges |V| - 1 times. A simple shortest
+        # path from src to any other vertex can have at-most |V| - 1
+        # edges
+        for i in range(len(self.all_nodes()) - 1):
+            # Update dist value and parent index of the adjacent vertices of
+            # the picked vertex. Consider only those vertices which are still in
+            # queue
+            for u, v, w in self.graph:
+                if dist[self.search_number(u)] != 9999 and dist[self.search_number(u)] + w < dist[self.search_number(v)]:
+                    dist[self.search_number(v)] = dist[self.search_number(u)] + w
+
+                # Step 3: check for negative-weight cycles. The above step
+        # guarantees shortest distances if graph doesn't contain
+        # negative weight cycle. If we get a shorter path, then there
+        # is a cycle.
+
+        for u, v, w in self.graph:
+            if dist[self.search_number(u)] != 9999 and dist[self.search_number(u)] + w < dist[self.search_number(v)]:
+                print("Graph contains negative weight cycle")
+                return
+
+        # print all distance
+        self.printArr(dist)
 
 
 
