@@ -403,8 +403,8 @@ class Graph(object):
                 parent.append(node)
                 rank.append(0)
                 cheapest = [-1] * self.len_node()
-                # Keep combining components (or sets) until all
-            # compnentes are not combined into single MST
+                # Продолжаем комбинировать компоненты (или наборы), пока все
+                # компоненты не объединяются в один MST
             while numTrees > 1:
                 for i in range(len(self.new_list())):
                     u, v, w = self.new_list()[i]
@@ -570,32 +570,32 @@ class Graph(object):
                 dist[self.search_number(i)]
             )
 
-        # The main function that finds shortest distances from src to
+        # Основная функция, которая находит кратчайшие расстояния от src до
+        # всех остальных вершин по алгоритму Беллмана-Форда. Функция
+        # также определяет цикл отрицательного веса
 
-    # all other vertices using Bellman-Ford algorithm. The function
-    # also detects negative weight cycle
     def BellmanFord(self, src):
 
-        # Step 1: Initialize distances from src to all other vertices
-        # as INFINITE
+        # Шаг 1: Инициализировать расстояния от src до всех остальных вершин
+        # как бесконечно большой
+
         dist = [9999] * len(self.all_nodes())
         dist[src] = 0
 
-        # Step 2: Relax all edges |V| - 1 times. A simple shortest
-        # path from src to any other vertex can have at-most |V| - 1
-        # edges
         for i in range(len(self.all_nodes()) - 1):
-            # Update dist value and parent index of the adjacent vertices of
-            # the picked vertex. Consider only those vertices which are still in
-            # queue
+
+            # Обновить значение dist и родительский индекс соседних вершин
+            # выбранной вершины. Рассмотрим только те вершины,
+            # которые все еще находятся в очереди
+
             for u, v, w in self.graph:
                 if dist[self.search_number(u)] != 9999 and dist[self.search_number(u)] + w < dist[self.search_number(v)]:
                     dist[self.search_number(v)] = dist[self.search_number(u)] + w
 
-                # Step 3: check for negative-weight cycles. The above step
-        # guarantees shortest distances if graph doesn't contain
-        # negative weight cycle. If we get a shorter path, then there
-        # is a cycle.
+        # Шаг 3: проверьте наличие циклов с отрицательным весом.
+        # Вышеуказанный шаг гарантирует кратчайшее расстояние,
+        # если график не содержит цикл отрицательного веса.
+        # Если мы получим более короткий путь, то там - это цикл.
 
         for u, v, w in self.graph:
             if dist[self.search_number(u)] != 9999 and dist[self.search_number(u)] + w < dist[self.search_number(v)]:
