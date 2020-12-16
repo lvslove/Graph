@@ -591,37 +591,39 @@ class Graph(object):
         # всех остальных вершин по алгоритму Беллмана-Форда. Функция
         # также определяет цикл отрицательного веса
 
-    def BellmanFord(self, src):
-
+    def BellmanFord(self):
         # Шаг 1: Инициализировать расстояния от src до всех остальных вершин
         # как бесконечно большой
-
-        dist = [9999] * len(self.all_nodes())
-        dist[src] = 0
-        x= - 1
-
-        for i in range(len(self.all_nodes()) - 1):
-
+        result = []
+        d = [1 for k in range(len(self.all_nodes()))]
+        p = [-1 for k in range(len(self.all_nodes()))]
+        x = - 1
+        for i in range(1, len(self.all_nodes())):
+            x = -1
             # Обновить значение dist и родительский индекс соседних вершин
             # выбранной вершины. Рассмотрим только те вершины,
             # которые все еще находятся в очереди
-
             for u, v, w in self.graph:
-                if dist[self.search_number(u)] != 9999 and dist[self.search_number(u)] + w < dist[self.search_number(v)]:
-                    dist[self.search_number(v)] = dist[self.search_number(u)] + w
-
-        # Шаг 3: проверьте наличие циклов с отрицательным весом.
-        # Вышеуказанный шаг гарантирует кратчайшее расстояние,
-        # если график не содержит цикл отрицательного веса.
-        # Если мы получим более короткий путь, то там - это цикл.
-
-        for u, v, w in self.graph:
-            if dist[self.search_number(u)] != 9999 and dist[self.search_number(u)] + w < dist[self.search_number(v)]:
-                print("Graph contains negative weight cycle")
-                return
-
-        # print all distance
-        self.printArr(dist)
+                if d[self.search_number(v)] > d[self.search_number(u)] + w:
+                    d[self.search_number(v)] = d[self.search_number(u)] + w
+                    p[self.search_number(v)] = self.search_number(u)
+                    x = self.search_number(v)
+        if x == -1:
+            print("Graph not contains negative weight cycle")
+            return
+        for i in range(0, len(self.all_nodes())-1):
+            x = p[x]
+        vert = x
+        while True:
+            result.append(vert)
+            if vert == x and len(result) > 1:
+                break
+            vert = p[vert]
+        print("Negative cycle")
+        result.reverse()
+        print(result)
+        for i in set(result):
+            print(self.search_key(i), end=" ")
 
     def dijsktrav2(graph, initial, end):
         # shortest paths is a dict of nodes
@@ -674,3 +676,37 @@ class Graph(object):
                       self.dijsktra(i)[0][end_w]
                       )
                 print(self.dijsktrav2(i, end_w), "\n")
+
+    def iv_c(gr, s):
+        answer = []
+        d = [1 for k in range(len(gr))]
+        p = [-1 for k in range(len(gr))]
+        d[s] = 0
+        x = -1
+        for i in range(1, len(gr)):
+            x = -1
+            for u in gr:
+                for v in gr[u]:
+                    if d[int(v)] > d[int(u)] + gr[u][v]:
+                        d[int(v)] = d[int(u)] + gr[u][v]
+                        p[int(v)] = int(u)
+                        x = int(v)
+        if x == -1:
+            print("Нет отрицательных путей")
+            return
+        gr_array = []
+        for u in gr:
+            for v in gr[u]:
+                gr_array.append([int(u), (int(v)), gr[u][v]])
+
+        for i in range(0, len(gr) - 1):
+            x = p[x]
+        vert = x
+        while True:
+            answer.append(vert)
+            if vert == x and len(answer) > 1:
+                break
+            vert = p[vert]
+        answer.reverse()
+        print(answer)
+
