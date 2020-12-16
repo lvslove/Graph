@@ -1,7 +1,6 @@
 import collections
 from collections import defaultdict
 
-
 import json
 
 
@@ -10,11 +9,12 @@ class Graph(object):
     def __init__(self, directed=False):
         self._directed = directed
         self._graph = defaultdict(set)
-        self.weight = defaultdict(set)
+        # self.weight = defaultdict(set)
         self.edges = defaultdict(list)
         self.graph = []  # default dictionary
         self.distances = {}
         self.graph_num = []
+        self.weight ={}
         # self.add_connections(connections)
 
     def nice_print(self):
@@ -202,7 +202,6 @@ class Graph(object):
     def all_nodes(self):
         return self._graph.keys()
 
-
     def key_val(self):
         i = 0
         d = defaultdict(set)
@@ -332,6 +331,18 @@ class Graph(object):
         else:
             return False
 
+    def addEdge(self, u, v, w):
+        self.graph.append([u, v, w])
+        self._graph[u].add(v)
+        self._graph[v].add(u)
+        self.edges[u].append(v)
+        self.edges[v].append(u)
+        self.distances[(u, v)] = w
+        self.distances[(v, u)] = w
+        self.graph_num.append([self.search_number(u), self.search_number(v), w])
+
+        # find set of an element i
+
     def number_node(self):
         num = []
         j = 0
@@ -365,16 +376,7 @@ class Graph(object):
             a.pop(0)
         return sorted(s)
 
-    def addEdge(self, u, v, w):
-        self.graph.append([u, v, w])
-        self._graph[u].add(v)
-        self._graph[v].add(u)
-        self.edges[u].append(v)
-        self.edges[v].append(u)
-        self.distances[(u, v)] = w
-        self.distances[(v, u)] = w
-        self.graph_num.append([self.search_number(u), self.search_number(v), w])
-        # find set of an element i
+    # Объединение двух вершин в одну компоненту
 
     def union(self, parent, rank, x, y):
         xroot = self.find(parent, x)
@@ -384,8 +386,10 @@ class Graph(object):
         elif rank[xroot] > rank[yroot]:
             parent[yroot] = xroot
         else:
-            parent[yroot] = xroot  # Make one as root and increment.
+            parent[yroot] = xroot
             rank[xroot] += 1
+
+    # Служебная функция для поиска набора элемента i
 
     def find(self, parent, i):
         if parent[i] == i:
@@ -395,7 +399,15 @@ class Graph(object):
     def boruvkaMST(self):
         parent = []
         rank = []
+
+        # Массив для хранения индекса самого дешевого края
+        # подмножество. Он хранит [u, v, w] для каждого компонента
+
         cheapest = []
+
+        # Изначально существует numTrees разных деревьев.
+        # Наконец будет одно дерево, которое будет MST
+
         numTrees = self.len_node()
         MSTweight = 0
         if self.check_connected():
@@ -408,15 +420,18 @@ class Graph(object):
             while numTrees > 1:
                 for i in range(len(self.new_list())):
                     u, v, w = self.new_list()[i]
+                    # самый дешевый из всех компонентов
                     set1 = self.find(parent, u)
                     set2 = self.find(parent, v)
-
+                    # самые дешевые ребра наборов 1 и 2
                     if set1 != set2:
                         if cheapest[set1] == -1 or cheapest[set1][2] > w:
                             cheapest[set1] = [u, v, w]
                         if cheapest[set2] == -1 or cheapest[set2][2] > w:
                             cheapest[set2] = [u, v, w]
-                # Consider the above picked cheapest edges and add them to MST
+
+                # Рассмотриваем выбранные выше самые дешевые ребра и добавим их
+                # в MST
                 for node in range(self.len_node()):
                     if cheapest[node] != -1:
                         u, v, w = cheapest[node]
@@ -506,10 +521,10 @@ class Graph(object):
     def len_node(self):
         return len(self.num_node())
 
-    def dijsktra(graph, initial):
+    def dijsktra(self, initial):
         visited = {initial: 0}
         path = {}
-        nodes = set(graph.node())
+        nodes = set(self.node())
         while nodes:
             min_node = None
             for node in nodes:
@@ -523,11 +538,13 @@ class Graph(object):
             nodes.remove(min_node)
             current_weight = visited[min_node]
 
-            for edge in graph.edges[min_node]:
-                weight = current_weight + graph.distances[(min_node, edge)]
+            for edge in self.edges[min_node]:
+
+                weight = current_weight + self.distances[(min_node, edge)]
                 if edge not in visited or weight < visited[edge]:
                     visited[edge] = weight
                     path[edge] = min_node
+
         return visited, path
 
     def nice_print_dijskra(self):
@@ -581,6 +598,7 @@ class Graph(object):
 
         dist = [9999] * len(self.all_nodes())
         dist[src] = 0
+        x= - 1
 
         for i in range(len(self.all_nodes()) - 1):
 
@@ -605,5 +623,54 @@ class Graph(object):
         # print all distance
         self.printArr(dist)
 
+    def dijsktrav2(graph, initial, end):
+        # shortest paths is a dict of nodes
+        # whose value is a tuple of (previous node, weight)
+        shortest_paths = {initial: (None, 0)}
+        current_node = initial
+        visited = set()
 
+        while current_node != end:
+            visited.add(current_node)
+            destinations = graph.edges[current_node]
+            weight_to_current_node = shortest_paths[current_node][1]
 
+            for next_node in destinations:
+                weight = graph.distances[
+                             (current_node, next_node)] + weight_to_current_node
+                if next_node not in shortest_paths:
+                    shortest_paths[next_node] = (current_node, weight)
+                else:
+                    current_shortest_weight = shortest_paths[next_node][1]
+                    if current_shortest_weight > weight:
+                        shortest_paths[next_node] = (current_node, weight)
+
+            next_destinations = {node: shortest_paths[node] for node in
+                                 shortest_paths if node not in visited}
+            if not next_destinations:
+                return "Route Not Possible"
+            # next node is the destination with the lowest weight
+            current_node = min(next_destinations,
+                               key=lambda k: next_destinations[k][1])
+
+        # Work back through destinations in shortest path
+        path = []
+        while current_node is not None:
+            path.append(current_node)
+            next_node = shortest_paths[current_node][0]
+            current_node = next_node
+        # Reverse path
+        path = path[::-1]
+        return path
+
+    def mytask16_diect(self):
+        for i in self._graph:
+            end = set(self.node()) - set(i)
+            while end:
+                end_w = end.pop()
+                print("Path", i, " - >",
+                      end_w,
+                      "with distance:",
+                      self.dijsktra(i)[0][end_w]
+                      )
+                print(self.dijsktrav2(i, end_w), "\n")
