@@ -677,36 +677,3 @@ class Graph(object):
                       )
                 print(self.dijsktrav2(i, end_w), "\n")
 
-    def iv_c(gr, s):
-        answer = []
-        d = [1 for k in range(len(gr))]
-        p = [-1 for k in range(len(gr))]
-        d[s] = 0
-        x = -1
-        for i in range(1, len(gr)):
-            x = -1
-            for u in gr:
-                for v in gr[u]:
-                    if d[int(v)] > d[int(u)] + gr[u][v]:
-                        d[int(v)] = d[int(u)] + gr[u][v]
-                        p[int(v)] = int(u)
-                        x = int(v)
-        if x == -1:
-            print("Нет отрицательных путей")
-            return
-        gr_array = []
-        for u in gr:
-            for v in gr[u]:
-                gr_array.append([int(u), (int(v)), gr[u][v]])
-
-        for i in range(0, len(gr) - 1):
-            x = p[x]
-        vert = x
-        while True:
-            answer.append(vert)
-            if vert == x and len(answer) > 1:
-                break
-            vert = p[vert]
-        answer.reverse()
-        print(answer)
-
