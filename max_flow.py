@@ -93,7 +93,7 @@ def main():
     g.new_read()
     g.new_list()
     print(g.adj)
-    print(g.max_flow('s', 't'))
+    print(g.max_flow('istok', 'stok'))
 
 
 if __name__ == '__main__':

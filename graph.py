@@ -598,7 +598,7 @@ class Graph(object):
         d = [1 for k in range(len(self.all_nodes()))]
         p = [-1 for k in range(len(self.all_nodes()))]
         x = - 1
-        for i in range(1, len(self.all_nodes())):
+        for i in range(0, len(self.all_nodes())):
             x = -1
             # Обновить значение dist и родительский индекс соседних вершин
             # выбранной вершины. Рассмотрим только те вершины,
